@@ -10,7 +10,8 @@ const keyApi = {
   }
 };
 
-const BASE_URL = 'https://api.thecatapi.com/v1/breeds';
+const BASE_URL = 'https://api.thecatapi.com/v1';
+const breeds = '/breeds';
 
 let storedBreeds = [];
 // breeds
@@ -24,7 +25,7 @@ const refs ={
 
 function fetchBreeds() {
 
-  return fetch(BASE_URL,keyApi)
+  return fetch(`${BASE_URL}${breeds}`,keyApi)
   .then((response) => {
     if(!response.ok){
       throw new Error(response.statusText)
@@ -33,18 +34,20 @@ function fetchBreeds() {
   })
   
 }
+
 fetchBreeds().then((data) => {
-  data = data.filter(img=> img.image?.url!=null)
-   
   storedBreeds = data;
-  console.log(storedBreeds);
-  
-  // for (let i=0; storedBreeds.length; i ++){
-  //   const breed = storedBreeds[i];
-  //   // console.log(i);
-  // }
+  // console.log(storedBreeds);
+  return refs.select.insertAdjacentHTML('beforeend',createSelectOption(storedBreeds))
 })
-.catch(err=> console.log(err))
-// fetch(BASE_URL,keyApi)
-//   .then((response) => response.json ).then(console.log)
+.catch(err=> console.log(err));
+
+
+function createSelectOption (arr) {
+  return arr.map(({id
+, name}) => `<option value="${id}">${name}</option>`).join('');
+}
+function createMarkup(arr) {
+
+}
   
