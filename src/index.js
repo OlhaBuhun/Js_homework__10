@@ -12,9 +12,10 @@ const keyApi = {
 
 const BASE_URL = 'https://api.thecatapi.com/v1';
 const breeds = '/breeds';
+const search = '/images/search';
 
 let storedBreeds = [];
-// breeds
+let breedId = '';
 
 const refs ={
   select: document.querySelector('.breed-select'),
@@ -37,17 +38,57 @@ function fetchBreeds() {
 
 fetchBreeds().then((data) => {
   storedBreeds = data;
-  // console.log(storedBreeds);
   return refs.select.insertAdjacentHTML('beforeend',createSelectOption(storedBreeds))
 })
 .catch(err=> console.log(err));
+
 
 
 function createSelectOption (arr) {
   return arr.map(({id
 , name}) => `<option value="${id}">${name}</option>`).join('');
 }
-function createMarkup(arr) {
+function renderCatCard(arr) {
+  return arr.map(({name, description, temperament, url }) => `
+  <img src="${url}"  alt="${name}">
+  <h2>${name}</h2>
+  <p>${description}</p>
+  <h3>Temperament</h3>
+  <p>${temperament}</p>`).join('');
 
 }
+ 
+
+function fetchCatByBreed(breedId) {
+
+  return fetch(`${BASE_URL}${search}?breed_ids=${breedId}`,keyApi)
+  .then((response) => {
+    if(!response.ok){
+      throw new Error(response.statusText)
+    }
+    return response.json();
+  })
+
+}
+// fetchCatByBreed(beng).then((data) => console.log(data))
+
+refs.select.addEventListener('change', onSelect);
+
+function onSelect(evt){
+  evt.preventDefault();
+  breedId = evt.target.value;
+
+  fetchCatByBreed(breedId).then((data) => {
+    console.log(data[0]);
+    // const breeds = data.map(({}))
+    return refs.container.insertAdjacentHTML('beforeend',renderCatCard(data))
+  })
+  .catch(err=> console.log(err));
+}
+
+// function fetchCatByBreed(breedId){
+  
+// }
+
+
   
