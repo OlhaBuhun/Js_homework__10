@@ -14,7 +14,7 @@ const BASE_URL = 'https://api.thecatapi.com/v1';
 const breeds = '/breeds';
 const search = '/images/search';
 
-let storedBreeds = [];
+// let storedBreeds = [];
 let breedId = '';
 
 const refs ={
@@ -37,8 +37,8 @@ function fetchBreeds() {
 }
 
 fetchBreeds().then((data) => {
-  storedBreeds = data;
-  return refs.select.insertAdjacentHTML('beforeend',createSelectOption(storedBreeds))
+  // storedBreeds = data;
+  return refs.select.insertAdjacentHTML('beforeend',createSelectOption(data))
 })
 .catch(err=> console.log(err));
 
@@ -49,17 +49,22 @@ function createSelectOption (arr) {
 , name}) => `<option value="${id}">${name}</option>`).join('');
 }
 
-// function renderCatCard(arr) {
-//   return arr.map(({name, vetstreet_url
-//     = url, description,temperament 
-//   }) => `
-//   <img class="breed-img-js " src="${url}"  alt="${name}">
-//   <h2>${name}</h2>
-//   <p>${description}</p>
-//   <h3>Temperament</h3>
-//   <p>${temperament}</p>`).join('');
+function renderCatCard(arr) {
+  return arr.map(({name, description,temperament, wikipedia_url}) => `
+  <a href="${wikipedia_url}"></a>
+  <h2>${name}</h2>
+  <p>${description}</p>
+  <h3>Temperament</h3>
+  <p>${temperament}</p>`).join('');
 
-// }
+}
+function renderCatUrl(arr) {
+  return arr.map(({url 
+  }) => `
+  <img src="${url}" alt="">
+  `).join('');
+
+}
  
 
 function fetchCatByBreed(breedId) {
@@ -73,7 +78,6 @@ function fetchCatByBreed(breedId) {
   })
 
 }
-// fetchCatByBreed(beng).then((data) => console.log(data))
 
 refs.select.addEventListener('change', onSelect);
 
@@ -83,17 +87,20 @@ function onSelect(evt){
   console.log(breedId);
 
   fetchCatByBreed(breedId).then((data) => {
-    // const breeds = data.map(({}))
-    const {url, breeds, wight} = data;
-    console.log(url);
-    // return refs.container.insertAdjacentHTML('beforeend',renderCatCard(data))
+    console.log(data);
+    let breedCat = [];
+    const resault = data.map(({breeds, url}) => {
+    //  return refs.container.insertAdjacentHTML(renderCatUrl(data))
+      breedCat = breeds
+     return refs.container.insertAdjacentHTML('beforeend',renderCatCard(breedCat))
+    })
+    
+    
   })
   .catch(err=> console.log(err));
 }
 
-// function fetchCatByBreed(breedId){
-  
-// }
+
 
 
   
