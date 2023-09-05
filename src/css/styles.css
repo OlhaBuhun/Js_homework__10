@@ -1,9 +1,17 @@
-/* .cat-info {
+.cat-info {
   display: flex;
-  justify-content: center;
+  gap: 10px;
+  max-width: 600px;
+  padding: 10px;
   align-items: center;
-} */
+  justify-content: flex-start;
+}
 
-.breed-img-js {
-  width: 300px;
+.img-cat {
+  display: block;
+  max-width: 50%; 
+}
+
+.js-list {
+  list-style: none;
 }

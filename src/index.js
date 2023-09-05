@@ -1,18 +1,7 @@
 import Notiflix from 'notiflix';
 // import axios from "axios";
+import API from './cat-api';
 
-// axios.defaults.headers.common["x-api-key"] = 'live_iNW5yRLQPuv27Qr1jI2atPHfmiX6QreVO2mkLHdj85XCpEeqizfV0zZCMXPsrFAk'
-
-
-const keyApi = {
-  headers: {
-    'x-api-key' : 'live_iNW5yRLQPuv27Qr1jI2atPHfmiX6QreVO2mkLHdj85XCpEeqizfV0zZCMXPsrFAk',
-  }
-};
-
-const BASE_URL = 'https://api.thecatapi.com/v1';
-const breeds = '/breeds';
-const search = '/images/search';
 
 // let storedBreeds = [];
 let breedId = '';
@@ -22,26 +11,16 @@ const refs ={
   container: document.querySelector('.cat-info'),
   loader: document.querySelector('.loader'),
   error:  document.querySelector('.error'),
+  list: document.querySelector('.js-list')
 }
 
-function fetchBreeds() {
 
-  return fetch(`${BASE_URL}${breeds}`,keyApi)
-  .then((response) => {
-    if(!response.ok){
-      throw new Error(response.statusText)
-    }
-    return response.json();
-  })
-  
-}
 
-fetchBreeds().then((data) => {
+API.fetchBreeds().then((data) => {
   // storedBreeds = data;
   return refs.select.insertAdjacentHTML('beforeend',createSelectOption(data))
 })
 .catch(err=> console.log(err));
-
 
 
 function createSelectOption (arr) {
@@ -50,54 +29,47 @@ function createSelectOption (arr) {
 }
 
 function renderCatCard(arr) {
-  return arr.map(({name, description,temperament, wikipedia_url}) => `
-  <a href="${wikipedia_url}"></a>
+  return arr.map(({name, description,temperament}) => `
+  <ul class="js-list">
+  <li>
   <h2>${name}</h2>
   <p>${description}</p>
   <h3>Temperament</h3>
-  <p>${temperament}</p>`).join('');
-
-}
-function renderCatUrl(arr) {
-  return arr.map(({url 
-  }) => `
-  <img src="${url}" alt="">
+  <p>${temperament}</p>
+  </li>
+  </ul>
   `).join('');
 
 }
- 
 
-function fetchCatByBreed(breedId) {
-
-  return fetch(`${BASE_URL}${search}?breed_ids=${breedId}`,keyApi)
-  .then((response) => {
-    if(!response.ok){
-      throw new Error(response.statusText)
-    }
-    return response.json();
-  })
-
-}
 
 refs.select.addEventListener('change', onSelect);
 
 function onSelect(evt){
   evt.preventDefault();
+  // refs.container.remove()
+  
   breedId = evt.target.value;
   console.log(breedId);
 
-  fetchCatByBreed(breedId).then((data) => {
+  API.fetchCatByBreed(breedId).then((data) => {
     console.log(data);
     let breedCat = [];
+
     const resault = data.map(({breeds, url}) => {
-    //  return refs.container.insertAdjacentHTML(renderCatUrl(data))
+    let image = document.createElement('img');
+    image.classList.add('img-cat');
+     image.src = `${url}`
+     refs.container.appendChild(image)
+     
       breedCat = breeds
      return refs.container.insertAdjacentHTML('beforeend',renderCatCard(breedCat))
     })
-    
-    
   })
-  .catch(err=> console.log(err));
+  .catch(err=> console.log(err))
+//   .finally(()=>{
+//     refs.container.remove()
+//   })
 }
 
 
