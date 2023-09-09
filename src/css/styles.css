@@ -15,3 +15,7 @@
 .js-list {
   list-style: none;
 }
+
+.js-hidden {
+  display: none;
+}
