@@ -33,4 +33,4 @@ function fetchCatByBreed(breedId) {
 
 }
 
-export default {fetchBreeds, fetchCatByBreed }
+export  {fetchBreeds, fetchCatByBreed }

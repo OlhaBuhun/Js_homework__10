@@ -1,6 +1,6 @@
 import Notiflix from 'notiflix';
 // import axios from "axios";
-import API from './cat-api';
+import {fetchBreeds, fetchCatByBreed } from './cat-api';
 
 
 // let storedBreeds = [];
@@ -15,25 +15,51 @@ const refs ={
 
 refs.loader.classList.add('js-hidden');
 refs.error.classList.add('js-hidden');
+refs.select.classList.add('js-hidden');
 
 // Notiflix.Loading.circle(refs.loader);
-Notiflix.Block.arrows('.loader')
+Notiflix.Block.arrows('.loader');
+
+document.addEventListener('click', onSelection);
+
+function onSelection(){
+  refs.loader.classList.remove('js-hidden');
+  
+
+  fetchBreeds().then((data) => {
+    refs.loader.classList.add('js-hidden');
+    refs.select.classList.remove('js-hidden');
+    document.removeEventListener('click', onSelection)
+    return refs.select.insertAdjacentHTML('beforeend',createSelectOption(data));
+  })
+  .catch(err=> {
+    refs.loader.classList.add('js-hidden');
+    refs.select.classList.add('js-hidden');
+    refs.error.classList.remove('js-hidden');
+    Notiflix.Block.remove('.loader');
+  });
+
+  
+
+}
 
 
-API.fetchBreeds().then((data) => {
-  return refs.select.insertAdjacentHTML('beforeend',createSelectOption(data));
-})
-.catch(err=> {
-  refs.loader.classList.add('js-hidden');
-  refs.select.classList.add('js-hidden');
-  refs.error.classList.remove('js-hidden');
-  Notiflix.Block.remove('.loader');
-});
+// fetchBreeds().then((data) => {
+//   // refs.loader.classList.add('js-hidden');
+//   return refs.select.insertAdjacentHTML('beforeend',createSelectOption(data));
+// })
+// .catch(err=> {
+//   refs.loader.classList.add('js-hidden');
+//   refs.select.classList.add('js-hidden');
+//   refs.error.classList.remove('js-hidden');
+//   Notiflix.Block.remove('.loader');
+// });
 
-refs.select.addEventListener('change', onSelect);
+refs.select.addEventListener('change', onCatBreedSelection);
 
-function onSelect(evt){
+function onCatBreedSelection(evt){
   evt.preventDefault();
+
   refs.loader.classList.remove('js-hidden');
   refs.container.classList.add('js-hidden');
   
@@ -41,7 +67,7 @@ function onSelect(evt){
   console.log(breedId);
   refs.container.innerHTML = '';
 
-  API.fetchCatByBreed(breedId).then((data) => {
+  fetchCatByBreed(breedId).then((data) => {
     refs.container.classList.remove('js-hidden');
     console.log(data);
     let breedCat = [];
@@ -49,10 +75,10 @@ function onSelect(evt){
     const resault = data.map(({breeds, url}) => {
     let image = document.createElement('img');
     image.classList.add('img-cat');
-     image.src = `${url}`
-     refs.container.appendChild(image)
+    image.src = `${url}`
+    refs.container.appendChild(image)
      
-      breedCat = breeds
+     breedCat = breeds
      refs.container.insertAdjacentHTML('beforeend',renderCatCard(breedCat))
      refs.loader.classList.add('js-hidden');
     })
