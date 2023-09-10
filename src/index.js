@@ -11,40 +11,38 @@ const refs ={
   container: document.querySelector('.cat-info'),
   loader: document.querySelector('.loader'),
   error:  document.querySelector('.error'),
-  // list: document.querySelector('.js-list')
 }
 
 refs.loader.classList.add('js-hidden');
 refs.error.classList.add('js-hidden');
 
+// Notiflix.Loading.circle(refs.loader);
+Notiflix.Block.arrows('.loader')
 
-// function breedSelection (){
-
-//   refs.loader.classList.remove('js-hidden');
-
- 
-// }
 
 API.fetchBreeds().then((data) => {
-  refs.loader.classList.add('js-hidden');
   return refs.select.insertAdjacentHTML('beforeend',createSelectOption(data));
 })
-.catch(err=> console.log(err));
+.catch(err=> {
+  refs.loader.classList.add('js-hidden');
+  refs.select.classList.add('js-hidden');
+  refs.error.classList.remove('js-hidden');
+  Notiflix.Block.remove('.loader');
+});
 
-
-refs.select.addEventListener('click', onSelect);
+refs.select.addEventListener('change', onSelect);
 
 function onSelect(evt){
   evt.preventDefault();
   refs.loader.classList.remove('js-hidden');
-  // refs.container.classList.add('js-hidden');
+  refs.container.classList.add('js-hidden');
   
   breedId = evt.target.value;
   console.log(breedId);
   refs.container.innerHTML = '';
 
   API.fetchCatByBreed(breedId).then((data) => {
-    // refs.container.classList.remove('js-hidden');
+    refs.container.classList.remove('js-hidden');
     console.log(data);
     let breedCat = [];
 
@@ -59,7 +57,12 @@ function onSelect(evt){
      refs.loader.classList.add('js-hidden');
     })
   })
-  .catch(err=> console.log(err))
+  .catch(err=> {
+    refs.loader.classList.add('js-hidden');
+    refs.select.classList.add('js-hidden');
+    refs.error.classList.remove('js-hidden');
+    Notiflix.Block.remove('.loader');
+  });
 
 }
 
