@@ -1,9 +1,7 @@
 import Notiflix from 'notiflix';
-// import axios from "axios";
 import {fetchBreeds, fetchCatByBreed } from './cat-api';
 
 
-// let storedBreeds = [];
 let breedId = '';
 
 const refs ={
@@ -11,49 +9,30 @@ const refs ={
   container: document.querySelector('.cat-info'),
   loader: document.querySelector('.loader'),
   error:  document.querySelector('.error'),
+  click: document.querySelector('.click'),
 }
 
 refs.loader.classList.add('js-hidden');
 refs.error.classList.add('js-hidden');
 refs.select.classList.add('js-hidden');
 
-// Notiflix.Loading.circle(refs.loader);
 Notiflix.Block.arrows('.loader');
 
 document.addEventListener('click', onSelection);
 
 function onSelection(){
   refs.loader.classList.remove('js-hidden');
-  
 
   fetchBreeds().then((data) => {
     refs.loader.classList.add('js-hidden');
     refs.select.classList.remove('js-hidden');
+    refs.click.classList.add('js-hidden');
+
     document.removeEventListener('click', onSelection)
     return refs.select.insertAdjacentHTML('beforeend',createSelectOption(data));
   })
-  .catch(err=> {
-    refs.loader.classList.add('js-hidden');
-    refs.select.classList.add('js-hidden');
-    refs.error.classList.remove('js-hidden');
-    Notiflix.Block.remove('.loader');
-  });
-
-  
-
-}
-
-
-// fetchBreeds().then((data) => {
-//   // refs.loader.classList.add('js-hidden');
-//   return refs.select.insertAdjacentHTML('beforeend',createSelectOption(data));
-// })
-// .catch(err=> {
-//   refs.loader.classList.add('js-hidden');
-//   refs.select.classList.add('js-hidden');
-//   refs.error.classList.remove('js-hidden');
-//   Notiflix.Block.remove('.loader');
-// });
+  .catch(catchError);
+};
 
 refs.select.addEventListener('change', onCatBreedSelection);
 
@@ -83,19 +62,14 @@ function onCatBreedSelection(evt){
      refs.loader.classList.add('js-hidden');
     })
   })
-  .catch(err=> {
-    refs.loader.classList.add('js-hidden');
-    refs.select.classList.add('js-hidden');
-    refs.error.classList.remove('js-hidden');
-    Notiflix.Block.remove('.loader');
-  });
+  .catch(catchError);
 
-}
+};
 
 function createSelectOption (arr) {
   return arr.map(({id
 , name}) => `<option value="${id}">${name}</option>`).join('');
-}
+};
 
 function renderCatCard(arr) {
   return arr.map(({name, description,temperament}) => `
@@ -108,8 +82,15 @@ function renderCatCard(arr) {
   </li>
   </ul>
   `).join('');
+};
 
-}
+function catchError(){
+  refs.loader.classList.add('js-hidden');
+  refs.select.classList.add('js-hidden');
+  refs.error.classList.remove('js-hidden');
+  refs.click.classList.add('js-hidden');
+  Notiflix.Block.remove('.loader');
+};
 
 
 

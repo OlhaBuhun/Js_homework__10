@@ -1,6 +1,10 @@
-/* body {
-  box-shadow: 10px 10px 8px 2px rgba(0, 0, 0, 0.3);
-} */
+body {
+  max-width: 100vw;
+  height: 100vw;
+  /* background-color: rgba(117, 190, 218, 0.5); */
+  background: linear-gradient(white,50%, blue);
+  box-shadow: 10px 10px 8px 2px rgba(0, 0, 0.2, 0.3);
+}
 
 .cat-info {
   display: flex;
@@ -40,4 +44,9 @@
 
 .breed-select {
   font-size: 16px;
+}
+
+.click {
+  font-size: 20px;
+  line-height: 1.6;
 }
